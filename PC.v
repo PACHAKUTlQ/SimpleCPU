@@ -16,6 +16,7 @@ module PC (
   wire [31:0] PCPlus4;
   wire [31:0] branchTarget;
   wire [31:0] nextPCIn;
+
   reg branchFlag;
 
   PCCore pcCore (
@@ -31,12 +32,13 @@ module PC (
       .nextInstruction(PCPlus4)
   );
 
-  // PC + (ImmGenOut << 1)
+  // PC + ImmGenOut
   PCBranchAdder pcBranchAdder (
       .PCIn             (currentPC),
       .immGenOut        (immGenOut),
       .branchInstruction(branchTarget)
   );
+
 
   always @(*) begin
     case (funct3)
@@ -80,8 +82,7 @@ endmodule
 
 // PC + 4
 module PCAdd4 (
-    input [31:0] PCIn,
-
+    input  [31:0] PCIn,
     output [31:0] nextInstruction
 );
 
@@ -90,24 +91,22 @@ module PCAdd4 (
 endmodule
 
 
-// PC + (ImmGenOut << 1)
+// PC + ImmGenOut 
 module PCBranchAdder (
-    input [31:0] PCIn,
-    input [31:0] immGenOut,
-
+    input  [31:0] PCIn,
+    input  [31:0] immGenOut,
     output [31:0] branchInstruction
 );
 
-  assign branchInstruction = PCIn + (immGenOut << 1);
+  assign branchInstruction = PCIn + immGenOut;
 
 endmodule
 
 
 module PCMux (
-    input [31:0] nextInstruction,
-    input [31:0] branchInstruction,
-    input        branchFlag,
-
+    input  [31:0] nextInstruction,
+    input  [31:0] branchInstruction,
+    input         branchFlag,
     output [31:0] nextPCOut
 );
 
