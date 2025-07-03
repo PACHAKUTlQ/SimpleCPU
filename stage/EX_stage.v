@@ -1,0 +1,32 @@
+`timescale 1ns / 1ps
+
+module EX_stage (
+    input [31:0] ex_pc,
+    input [31:0] readData1,
+    input [31:0] readData2,
+    input [31:0] immGenOut,
+    input [2:0] funct3,
+    input [1:0] ALUOp,
+    input i30,
+    input ALUSrc,
+
+    output [31:0] ALUResult,
+    output zeroFlag,
+    output [31:0] branchTargetAddress
+);
+
+  assign branchTargetAddress = ex_pc + immGenOut;
+
+  ALU alu_inst (
+      .readData1(readData1),
+      .readData2(readData2),
+      .immGenOut(immGenOut),
+      .funct3(funct3),
+      .ALUOp(ALUOp),
+      .i30(i30),
+      .ALUSrc(ALUSrc),
+      .result(ALUResult),
+      .zeroFlag(zeroFlag)
+  );
+
+endmodule
