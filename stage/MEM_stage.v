@@ -2,6 +2,7 @@
 
 module MEM_stage (
     input clk,
+
     input [31:0] ALUResult,
     input [31:0] writeData,
     input memRead,
@@ -9,7 +10,7 @@ module MEM_stage (
     input memWrite,
     input mem_zeroFlag,
     input mem_branch,
-    input [2:0] mem_funct3,
+    input [2:0] mem_funct3,  // Instruction [14:12]
 
     output [31:0] dataFromRAM,
     output reg PCSrc
@@ -18,7 +19,7 @@ module MEM_stage (
   always @(*) begin
     case (mem_funct3)
       3'b000:  PCSrc = mem_branch & mem_zeroFlag;  // beq
-      3'b001:  PCSrc = mem_branch & ~mem_zeroFlag; // bne
+      3'b001:  PCSrc = mem_branch & ~mem_zeroFlag;  // bne
       default: PCSrc = 1'b0;
     endcase
   end

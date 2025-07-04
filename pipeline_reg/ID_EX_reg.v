@@ -16,9 +16,9 @@ module ID_EX_reg (
     input [31:0] id_readData1,
     input [31:0] id_readData2,
     input [31:0] id_immGenOut,
-    input [4:0] id_rd,
-    input [2:0] id_funct3,
-    input id_i30,
+    input [4:0] id_rd,  // Instruction [11:7]
+    input [2:0] id_funct3,  // Instruction [14:12]
+    input id_i30,  // Instruction [30]
 
     // Outputs to EX Stage
     output reg [31:0] ex_pc,

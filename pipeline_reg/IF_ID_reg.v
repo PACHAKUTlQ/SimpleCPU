@@ -3,6 +3,7 @@
 module IF_ID_reg (
     input clk,
     input rst,
+
     input [31:0] if_pc,
     input [31:0] if_instruction,
     output reg [31:0] id_pc,

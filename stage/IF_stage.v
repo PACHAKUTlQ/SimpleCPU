@@ -3,8 +3,9 @@
 module IF_stage (
     input clk,
     input rst,
-    input PCSrc,
+
     input [31:0] branchTargetAddress,
+    input PCSrc,
 
     output [31:0] PCOut,
     output [31:0] instruction
