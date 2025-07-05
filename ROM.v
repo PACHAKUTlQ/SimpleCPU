@@ -6,7 +6,7 @@ module ROM (
     output reg [31:0] instruction
 );
 
-  localparam MEM_SIZE = 128;  // Size in Bytes
+  localparam MEM_SIZE = 256;  // Size in Bytes
   reg [7:0] rom[0:MEM_SIZE-1];
   integer i;
 

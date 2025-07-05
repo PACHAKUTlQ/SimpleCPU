@@ -1,15 +1,5 @@
 `timescale 1ns / 1ps
 
-`include "stage/IF_stage.v"
-`include "stage/ID_stage.v"
-`include "stage/EX_stage.v"
-`include "stage/MEM_stage.v"
-`include "stage/WB_stage.v"
-`include "pipeline_reg/IF_ID_reg.v"
-`include "pipeline_reg/ID_EX_reg.v"
-`include "pipeline_reg/EX_MEM_reg.v"
-`include "pipeline_reg/MEM_WB_reg.v"
-
 module PipelinedProcessor (
     input clk,
     input rst

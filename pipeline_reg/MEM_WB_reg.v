@@ -7,9 +7,9 @@ module MEM_WB_reg (
     // Inputs from MEM Stage
     input mem_memToReg,
     input mem_regWrite,
-    input [31:0] mem_dataFromRAM,
+    input [31:0] mem_dataFromRAM,  // readData from RAM
     input [31:0] mem_ALUResult,
-    input [4:0] mem_rd,
+    input [4:0] mem_rd,  // Instruction [11:7]
 
     // Outputs to WB Stage
     output reg wb_memToReg,

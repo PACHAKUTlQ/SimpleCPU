@@ -3,10 +3,11 @@
 module ID_stage (
     input clk,
     input rst,
+
     input [31:0] instruction,
     input [31:0] wb_writeData,
+    input [4:0] wb_rd,  // Instruction [11:7]
     input wb_regWrite,
-    input [4:0] wb_rd,
 
     output [1:0] ALUOp,
     output ALUSrc,
@@ -18,9 +19,9 @@ module ID_stage (
     output [31:0] readData1,
     output [31:0] readData2,
     output [31:0] immGenOut,
-    output [4:0] id_rd,
-    output [2:0] funct3,
-    output i30
+    output [4:0] id_rd,  // Instruction [11:7]
+    output [2:0] funct3,  // Instruction [14:12]
+    output i30  // Instruction [30]
 );
 
   wire [6:0] opcode;
@@ -59,7 +60,7 @@ module ID_stage (
 
   ImmGen imm_gen_inst (
       .instruction(instruction),
-      .immGenOut(immGenOut)
+      .immGenOut  (immGenOut)
   );
 
 endmodule
