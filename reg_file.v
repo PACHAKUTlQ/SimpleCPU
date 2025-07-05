@@ -20,7 +20,7 @@ module RegFile (
   assign readData1 = registerFile[rs1];
   assign readData2 = registerFile[rs2];
 
-  always @(posedge clk) begin
+  always @(*) begin
     if (!rst && regWrite && rd != 5'b0) begin
       registerFile[rd] <= writeData;
     end
