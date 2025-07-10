@@ -12,7 +12,8 @@ module EX_stage (
 
     output [31:0] ALUResult,
     output zeroFlag,
-    output [31:0] branchTargetAddress
+    output [31:0] branchTargetAddress,
+    output [3:0] ALUControl
 );
 
   assign branchTargetAddress = ex_pc + immGenOut << 1;
@@ -26,7 +27,8 @@ module EX_stage (
       .i30(i30),
       .ALUSrc(ALUSrc),
       .result(ALUResult),
-      .zeroFlag(zeroFlag)
+      .zeroFlag(zeroFlag),
+      .ALUControl_out(ALUControl)
   );
 
 endmodule

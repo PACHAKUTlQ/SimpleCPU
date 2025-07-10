@@ -22,7 +22,10 @@ module RegFile (
 
   always @(*) begin
     if (!rst && regWrite && rd != 5'b0) begin
+      $display("Writing to register %d: %h", rd, writeData);
       registerFile[rd] <= writeData;
+    end else begin
+      $display("Not writing to register %d: regWrite=%b", rd, regWrite);
     end
   end
 

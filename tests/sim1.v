@@ -43,35 +43,35 @@ module sim1;
       $display("Inst:%b", PP.if_stage.instruction);
       $display("x5(t0):%b", PP.id_stage.reg_file_inst.registerFile[5]);
       $display("x6(t1):%b", PP.id_stage.reg_file_inst.registerFile[6]);
-      $display("x7(t2):%b", PP.id_stage.reg_file_inst.registerFile[7]);
-      $display("x28(t3):%b", PP.id_stage.reg_file_inst.registerFile[28]);
-      $display("x29(t4):%b", PP.id_stage.reg_file_inst.registerFile[29]);
-      $display("x8(s0):%b", PP.id_stage.reg_file_inst.registerFile[8]);
-      $display("x9(s1):%b", PP.id_stage.reg_file_inst.registerFile[9]);
-      $display("Mem[0]:%b", {
-               PP.mem_stage.ram_inst.ramCore.ram[3], PP.mem_stage.ram_inst.ramCore.ram[2],
-               PP.mem_stage.ram_inst.ramCore.ram[1], PP.mem_stage.ram_inst.ramCore.ram[0]});
-      $display("Mem[4]:%b", {
-               PP.mem_stage.ram_inst.ramCore.ram[7], PP.mem_stage.ram_inst.ramCore.ram[6],
-               PP.mem_stage.ram_inst.ramCore.ram[5], PP.mem_stage.ram_inst.ramCore.ram[4]});
-      //      $display("id_regWrite:%b", PP.id_ex_reg.id_regWrite);
-      //      $display("id_rd:%b", PP.id_ex_reg.id_rd);
-      //      $display("ex_regWrite:%b", PP.ex_mem_reg.ex_regWrite);
-      //      $display("ex_rd:%b", PP.ex_mem_reg.ex_rd);
-      //      $display("mem_regWrite:%b", PP.mem_wb_reg.mem_regWrite);
-      //      $display("mem_rd:%b", PP.mem_wb_reg.mem_rd);
-      //      $display("wb_regWrite:%b", PP.mem_wb_reg.wb_regWrite);
-      //      $display("wb_rd:%b", PP.mem_wb_reg.wb_rd);
-      //      $display("wb_writeData:%b", PP.wb_stage.writeData);
-      //      $display("wb_ALUResult:%b", PP.mem_wb_reg.wb_ALUResult);
-      //      $display("mem_ALUResult:%b", PP.ex_mem_reg.mem_ALUResult);
-      //      $display("ex_ALUResult:%b", PP.ex_mem_reg.ex_ALUResult);
-      //      $display("ALU core inputs: %b, %b", PP.ex_stage.alu_inst.readData1,
-      //               PP.ex_stage.alu_inst.aluCore.operand2);
-      //      $display("reg file inputs: %b, %b", PP.id_stage.reg_file_inst.rs1,
-      //               PP.id_stage.reg_file_inst.rs2);
-      //      $display("reg file outputs: %b, %b", PP.id_stage.reg_file_inst.readData1,
-      //               PP.id_stage.reg_file_inst.readData2);
+      // $display("x7(t2):%b", PP.id_stage.reg_file_inst.registerFile[7]);
+      // $display("x28(t3):%b", PP.id_stage.reg_file_inst.registerFile[28]);
+      // $display("x29(t4):%b", PP.id_stage.reg_file_inst.registerFile[29]);
+      // $display("x8(s0):%b", PP.id_stage.reg_file_inst.registerFile[8]);
+      // $display("x9(s1):%b", PP.id_stage.reg_file_inst.registerFile[9]);
+      // $display("Mem[0]:%b", {
+      //          PP.mem_stage.ram_inst.ramCore.ram[3], PP.mem_stage.ram_inst.ramCore.ram[2],
+      //          PP.mem_stage.ram_inst.ramCore.ram[1], PP.mem_stage.ram_inst.ramCore.ram[0]});
+      // $display("Mem[4]:%b", {
+      //          PP.mem_stage.ram_inst.ramCore.ram[7], PP.mem_stage.ram_inst.ramCore.ram[6],
+      //          PP.mem_stage.ram_inst.ramCore.ram[5], PP.mem_stage.ram_inst.ramCore.ram[4]});
+           $display("id_regWrite:%b", PP.id_ex_reg.id_regWrite);
+           $display("id_rd:%b", PP.id_ex_reg.id_rd);
+           $display("ex_regWrite:%b", PP.ex_mem_reg.ex_regWrite);
+           $display("ex_rd:%b", PP.ex_mem_reg.ex_rd);
+           $display("mem_regWrite:%b", PP.mem_wb_reg.mem_regWrite);
+           $display("mem_rd:%b", PP.mem_wb_reg.mem_rd);
+           $display("wb_regWrite:%b", PP.mem_wb_reg.wb_regWrite);
+           $display("wb_rd:%b", PP.mem_wb_reg.wb_rd);
+           $display("wb_writeData:%b", PP.wb_stage.writeData);
+           $display("wb_ALUResult:%b", PP.mem_wb_reg.wb_ALUResult);
+           $display("mem_ALUResult:%b", PP.ex_mem_reg.mem_ALUResult);
+           $display("ex_ALUResult:%b", PP.ex_mem_reg.ex_ALUResult);
+           $display("ALU core inputs: %b, %b", PP.ex_stage.alu_inst.readData1,
+                    PP.ex_stage.alu_inst.aluCore.operand2);
+           $display("reg file inputs: %b, %b", PP.id_stage.reg_file_inst.rs1,
+                    PP.id_stage.reg_file_inst.rs2);
+           $display("reg file outputs: %b, %b", PP.id_stage.reg_file_inst.readData1,
+                    PP.id_stage.reg_file_inst.readData2);
     end
   end
   initial #220 $stop;

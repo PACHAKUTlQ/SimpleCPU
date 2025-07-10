@@ -19,6 +19,7 @@ module PipelinedProcessor (
   wire id_memToReg;
   wire id_memWrite;
   wire id_regWrite;
+  wire [1:0] id_jumpType;  // 01: jalr, 10: jal
   wire [31:0] id_readData1;
   wire [31:0] id_readData2;
   wire [31:0] id_immGenOut;
@@ -45,6 +46,7 @@ module PipelinedProcessor (
   wire [31:0] ex_ALUResult;
   wire ex_zeroFlag;
   wire [31:0] ex_branchTargetAddress;
+  wire [3:0] ex_ALUControl;
   wire [31:0] mem_ALUResult;
   wire mem_memRead;
   wire mem_memToReg;
@@ -75,6 +77,9 @@ module PipelinedProcessor (
       .rst(rst),
       .PCSrc(mem_PCSrc),
       .branchTargetAddress(mem_branchTargetAddress),
+      .jumpType(id_jumpType),
+      .zeroFlag(ex_zeroFlag),
+      .ALUResult(ex_ALUResult),
       .PCOut(if_pc),
       .instruction(if_instruction)
   );
@@ -104,6 +109,7 @@ module PipelinedProcessor (
       .memToReg(id_memToReg),
       .memWrite(id_memWrite),
       .id_regWrite(id_regWrite),
+      .jumpType(id_jumpType),
       .readData1(id_readData1),
       .readData2(id_readData2),
       .immGenOut(id_immGenOut),
@@ -158,7 +164,8 @@ module PipelinedProcessor (
       .ALUSrc(ex_ALUSrc),
       .ALUResult(ex_ALUResult),
       .zeroFlag(ex_zeroFlag),
-      .branchTargetAddress(ex_branchTargetAddress)
+      .branchTargetAddress(ex_branchTargetAddress),
+      .ALUControl(ex_ALUControl)
   );
 
   // EX/MEM Pipeline Register

@@ -5,6 +5,9 @@ module PC (
     input rst,
     input PCSrc,
     input [31:0] branchTargetAddress,
+    input [1:0] jumpType,  // 01: jalr, 10: jal
+    input zeroFlag,
+    input [31:0] ALUResult,
 
     output [31:0] PCOut
 );
@@ -22,15 +25,18 @@ module PC (
 
   // PC + 4
   PCAdd4 pcAdd4 (
-      .PCIn           (currentPC),
-      .nextInstruction(PCPlus4)
+      .PCIn   (currentPC),
+      .PCPlus4(PCPlus4)
   );
 
   PCMux pcMux (
-      .nextInstruction  (PCPlus4),
-      .branchInstruction(branchTargetAddress),
-      .branchFlag       (PCSrc),
-      .nextPCOut        (nextPCIn)
+      .PCPlus4       (PCPlus4),
+      .immInstruction(branchTargetAddress),
+      .branchFlag    (PCSrc),
+      .jumpType      (jumpType),
+      .zeroFlag      (zeroFlag),
+      .ALUResult     (ALUResult),
+      .nextPCOut     (nextPCIn)
   );
 
   assign PCOut = currentPC;
@@ -60,21 +66,39 @@ endmodule
 // PC + 4
 module PCAdd4 (
     input  [31:0] PCIn,
-    output [31:0] nextInstruction
+    output [31:0] PCPlus4
 );
 
-  assign nextInstruction = PCIn + 32'd4;
+  assign PCPlus4 = PCIn + 32'd4;
 
 endmodule
 
 
 module PCMux (
-    input  [31:0] nextInstruction,
-    input  [31:0] branchInstruction,
-    input         branchFlag,
-    output [31:0] nextPCOut
+    input [31:0] PCPlus4,
+    input [31:0] immInstruction,
+    input        branchFlag,
+    input [ 1:0] jumpType,        // 01: jalr, 10: jal
+    input        zeroFlag,
+    input [31:0] ALUResult,
+
+    output reg [31:0] nextPCOut
 );
 
-  assign nextPCOut = branchFlag ? branchInstruction : nextInstruction;
+  always @(*) begin
+    if (branchFlag) begin
+      if (zeroFlag) begin
+        nextPCOut = immInstruction;  // beq, bne, etc.
+      end else begin
+        if (jumpType == 2'b10) begin
+          nextPCOut = immInstruction;  // jal
+        end else if (jumpType == 2'b01) begin
+          nextPCOut = ALUResult;  // jalr
+        end
+      end
+    end else begin
+      nextPCOut = PCPlus4;  // PC + 4
+    end
+  end
 
 endmodule
