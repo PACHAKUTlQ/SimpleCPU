@@ -15,7 +15,7 @@ module EX_stage (
     output [31:0] branchTargetAddress
 );
 
-  assign branchTargetAddress = ex_pc + immGenOut;
+  assign branchTargetAddress = ex_pc + immGenOut << 1;
 
   ALU alu_inst (
       .readData1(readData1),

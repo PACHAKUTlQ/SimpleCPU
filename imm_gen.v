@@ -14,9 +14,7 @@ module ImmGen (
       7'b0100011:  // S-type: sw
       immGenOut = {{20{instruction[31]}}, instruction[31:25], instruction[11:7]};
       7'b1100011:  // B-type: beq, bne
-      immGenOut = {
-        {20{instruction[31]}}, instruction[7], instruction[30:25], instruction[11:8], 1'b0
-      };
+      immGenOut = {{21{instruction[31]}}, instruction[7], instruction[30:25], instruction[11:8]};
       default: immGenOut = 32'b0;
     endcase
   end
