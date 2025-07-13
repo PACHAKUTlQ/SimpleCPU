@@ -77,6 +77,26 @@ module ALUCore (
       4'b0101: zeroFlag = ($signed(result) < 0);  // blt
       default: zeroFlag = (result == 32'b0);  // Default zero flag for other operations
     endcase
+
+    // // DEBUG: ALU
+    // case (ALUControl)
+    //   4'b0111: begin
+    //     $display("ALU Operation: bne, Result: %h, Zero Flag: %b", result, zeroFlag);
+    //     $display("operand1: %h, operand2: %h", operand1, operand2);
+    //   end
+    //   4'b0110: begin
+    //     $display("ALU Operation: beq, Result: %h, Zero Flag: %b", result, zeroFlag);
+    //     $display("operand1: %h, operand2: %h", operand1, operand2);
+    //   end
+    //   4'b0100: begin
+    //     $display("ALU Operation: bge, Result: %h, Zero Flag: %b", result, zeroFlag);
+    //     $display("operand1: %h, operand2: %h", operand1, operand2);
+    //   end
+    //   4'b0101: begin
+    //     $display("ALU Operation: blt, Result: %h, Zero Flag: %b", result, zeroFlag);
+    //     $display("operand1: %h, operand2: %h", operand1, operand2);
+    //   end
+    // endcase
   end
 
 endmodule

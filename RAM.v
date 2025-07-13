@@ -52,10 +52,6 @@ module RAMCore (
     for (i = 0; i < MEM_SIZE; i = i + 1) begin
       ram[i] = 8'b0000_0000;
     end
-
-    // {ram[3],  ram[2],  ram[1],  ram[0]}  = 32'h11223344; 
-    // {ram[7],  ram[6],  ram[5],  ram[4]}  = 32'hAABBCCDD;
-    // {ram[11], ram[10], ram[9],  ram[8]}  = 32'hCAFEFACE;
   end
 
   // Synchronous write Operation
@@ -89,17 +85,40 @@ module RAMCore (
     end
   end
 
-endmodule
+  // // DEBUG: Store
+  // always @(posedge clk) begin
+  //   if (memWrite && (address[1:0] == 2'b00) && (address <= (MEM_SIZE - 4))) begin
+  //     $display("memWrite is 1, address: %h, writeData: %h", address, writeData);
+  //     $display("funct3: %b", funct3);
+  //     case (funct3)
+  //       3'b010: begin  // sw
+  //         $display("sw: address: %h, writeData: %h", address, writeData);
+  //       end
+  //       3'b000: begin  // sb
+  //         $display("sb: address: %h, writeData: %h", address, writeData);
+  //       end
+  //       default: $display("Unknown funct3 for memWrite: %b", funct3);
+  //     endcase
+  //   end
+  // end
 
-
-module RAMMux (
-    input [31:0] readData,
-    input [31:0] ALUResult,
-    input memToReg,
-
-    output [31:0] writeDataReg
-);
-
-  assign writeDataReg = memToReg ? readData : ALUResult;
-
+  // // DEBUG: Load
+  // always @(posedge clk) begin
+  //   if (memRead && (address[1:0] == 2'b00) && (address <= (MEM_SIZE - 4))) begin
+  //     $display("memRead is 1, address: %h", address);
+  //     $display("funct3: %b", funct3);
+  //     case (funct3)
+  //       3'b010: begin  // lw
+  //         $display("lw: address: %h, readData: %h", address, readData);
+  //       end
+  //       3'b000: begin  // lb
+  //         $display("lb: address: %h, readData: %h", address, readData);
+  //       end
+  //       3'b100: begin  // lbu
+  //         $display("lbu: address: %h, readData: %h", address, readData);
+  //       end
+  //       default: $display("Unknown funct3 for memRead: %b", funct3);
+  //     endcase
+  //   end
+  // end
 endmodule
