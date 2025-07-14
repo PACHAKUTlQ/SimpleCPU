@@ -131,7 +131,7 @@ module ALUControlUnit (
       2'b01: begin  // Branch operations
         case (funct3)
           3'b000:  ALUControl = 4'b0110;  // beq
-          3'b001:  ALUControl = 4'b0110;  // bne
+          3'b001:  ALUControl = 4'b0111;  // bne
           3'b101:  ALUControl = 4'b0100;  // bge
           3'b100:  ALUControl = 4'b0101;  // blt
           default: ALUControl = 4'b0000;
