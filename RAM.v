@@ -3,42 +3,12 @@
 module RAM (
     input clk,
 
-    input [31:0] ALUResult,
+    input [31:0] address,
     input [31:0] writeData,
+    input [2:0] funct3,
     input memRead,
     input memToReg,
     input memWrite,
-
-    output [31:0] writeDataReg
-);
-
-  wire [31:0] readData;
-
-  RAMCore ramCore (
-      .clk(clk),
-      .memRead(memRead),
-      .memWrite(memWrite),
-      .address(ALUResult),
-      .writeData(writeData),
-      .readData(readData)
-  );
-
-  RAMMux ramMux (
-      .readData(readData),
-      .ALUResult(ALUResult),
-      .memToReg(memToReg),
-      .writeDataReg(writeDataReg)
-  );
-
-endmodule
-
-
-module RAMCore (
-    input clk,
-    input memRead,
-    input memWrite,
-    input [31:0] address,
-    input [31:0] writeData,
 
     output reg [31:0] readData
 );
@@ -54,34 +24,41 @@ module RAMCore (
     end
   end
 
-  // Synchronous write Operation
-  always @(posedge clk) begin
-    // Only write if memWrite is high AND address is word-aligned AND in bounds
+  // Store
+  always @(*) begin
     if (memWrite && (address[1:0] == 2'b00) && (address <= (MEM_SIZE - 4))) begin
-      // Store the 32-bit writeData into 4 bytes in Little-Endian order
-      // writeData[ 7:0]  = LSB -> ram[address+0]
-      // writeData[15:8]  =      -> ram[address+1]
-      // writeData[23:16] =      -> ram[address+2]
-      // writeData[31:24] = MSB -> ram[address+3]
-      ram[address+0] <= writeData[7:0];
-      ram[address+1] <= writeData[15:8];
-      ram[address+2] <= writeData[23:16];
-      ram[address+3] <= writeData[31:24];
-      // $display("DEBUG RAM: Write Addr=%h, Data=%h", address, writeData);
+      case (funct3)
+        3'b010: begin  // sw
+          $display("sw: address: %h, writeData: %h", address, writeData);
+          ram[address+0] <= writeData[7:0];
+          ram[address+1] <= writeData[15:8];
+          ram[address+2] <= writeData[23:16];
+          ram[address+3] <= writeData[31:24];
+        end
+        3'b000: begin  // sb
+          $display("sb: address: %h, writeData: %h", address, writeData[7:0]);
+          ram[address] <= writeData[7:0];
+        end
+      endcase
     end
   end
 
-  // Asynchronous read Operation
+  // Load
   always @(*) begin
-    readData = 32'h0000_0000;
+    readData <= 32'h0000_0000;
 
     if (memRead && (address[1:0] == 2'b00) && (address <= (MEM_SIZE - 4))) begin
-      // Assemble the 32-bit data from 4 bytes in Little-Endian order
-      // readData[31:24] = MSB = ram[address+3]
-      // readData[23:16] =       ram[address+2]
-      // readData[15:8]  =       ram[address+1]
-      // readData[ 7:0]  = LSB = ram[address+0]
-      readData = {ram[address+3], ram[address+2], ram[address+1], ram[address]};
+      case (funct3)
+        3'b010: begin  // lw
+          readData <= {ram[address+3], ram[address+2], ram[address+1], ram[address]};
+        end
+        3'b000: begin  // lb
+          readData <= {{24{ram[address][7]}}, ram[address]};
+        end
+        3'b100: begin  // lbu
+          readData <= {{24'b0}, ram[address]};
+        end
+      endcase
     end
   end
 
@@ -121,4 +98,5 @@ module RAMCore (
   //     endcase
   //   end
   // end
+
 endmodule
