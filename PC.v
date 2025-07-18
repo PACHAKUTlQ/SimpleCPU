@@ -3,11 +3,9 @@
 module PC (
     input clk,
     input rst,
+
     input PCSrc,
-    input [31:0] branchTargetAddress,
-    input [1:0] jumpType,  // 01: jalr, 10: jal
-    input zeroFlag,
-    input [31:0] ALUResult,
+    input [31:0] jumpOrBranchAddress,  // jumpOrBranchAddress
 
     output [31:0] PCOut
 );
@@ -30,13 +28,10 @@ module PC (
   );
 
   PCMux pcMux (
-      .PCPlus4       (PCPlus4),
-      .immInstruction(branchTargetAddress),
-      .branchFlag    (PCSrc),
-      .jumpType      (jumpType),
-      .zeroFlag      (zeroFlag),
-      .ALUResult     (ALUResult),
-      .nextPCOut     (nextPCIn)
+      .PCPlus4            (PCPlus4),
+      .jumpOrBranchAddress(jumpOrBranchAddress),
+      .PCSrc              (PCSrc),
+      .nextPCOut          (nextPCIn)
   );
 
   assign PCOut = currentPC;
@@ -74,31 +69,15 @@ module PCAdd4 (
 endmodule
 
 
+// All data from MEM stage
 module PCMux (
     input [31:0] PCPlus4,
-    input [31:0] immInstruction,
-    input        branchFlag,
-    input [ 1:0] jumpType,        // 01: jalr, 10: jal
-    input        zeroFlag,
-    input [31:0] ALUResult,
+    input [31:0] jumpOrBranchAddress,
+    input        PCSrc,
 
-    output reg [31:0] nextPCOut
+    output [31:0] nextPCOut
 );
 
-  always @(*) begin
-    if (branchFlag) begin
-      if (zeroFlag) begin
-        nextPCOut = immInstruction;  // beq, bne, etc.
-      end else begin
-        if (jumpType == 2'b10) begin
-          nextPCOut = immInstruction;  // jal
-        end else if (jumpType == 2'b01) begin
-          nextPCOut = ALUResult;  // jalr
-        end
-      end
-    end else begin
-      nextPCOut = PCPlus4;  // PC + 4
-    end
-  end
+  assign nextPCOut = PCSrc ? jumpOrBranchAddress : PCPlus4;
 
 endmodule
