@@ -13,6 +13,7 @@ module ID_EX_reg (
     input id_memToReg,
     input id_memWrite,
     input id_regWrite,
+    input [1:0] id_jumpType,  // 01: jalr, 10: jal
     input [31:0] id_readData1,
     input [31:0] id_readData2,
     input [31:0] id_immGenOut,
@@ -29,6 +30,7 @@ module ID_EX_reg (
     output reg ex_memToReg,
     output reg ex_memWrite,
     output reg ex_regWrite,
+    output reg [1:0] ex_jumpType,
     output reg [31:0] ex_readData1,
     output reg [31:0] ex_readData2,
     output reg [31:0] ex_immGenOut,
@@ -47,6 +49,7 @@ module ID_EX_reg (
       ex_memToReg <= 1'b0;
       ex_memWrite <= 1'b0;
       ex_regWrite <= 1'b0;
+      ex_jumpType <= 2'b00;
       ex_readData1 <= 32'b0;
       ex_readData2 <= 32'b0;
       ex_immGenOut <= 32'b0;
@@ -62,6 +65,7 @@ module ID_EX_reg (
       ex_memToReg <= id_memToReg;
       ex_memWrite <= id_memWrite;
       ex_regWrite <= id_regWrite;
+      ex_jumpType <= id_jumpType;
       ex_readData1 <= id_readData1;
       ex_readData2 <= id_readData2;
       ex_immGenOut <= id_immGenOut;
