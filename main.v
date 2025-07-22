@@ -8,6 +8,7 @@ module PipelinedProcessor (
   // Wires between IF and ID
   wire [31:0] if_pc;
   wire [31:0] if_instruction;
+
   wire [31:0] id_pc;
   wire [31:0] id_instruction;
 
@@ -35,6 +36,7 @@ module PipelinedProcessor (
   wire ex_memToReg;
   wire ex_memWrite;
   wire ex_regWrite;
+  wire [1:0] ex_jumpType;
   wire [31:0] ex_readData1;
   wire [31:0] ex_readData2;
   wire [31:0] ex_immGenOut;
@@ -45,8 +47,11 @@ module PipelinedProcessor (
   // Wires between EX and MEM
   wire [31:0] ex_ALUResult;
   wire ex_zeroFlag;
-  wire [31:0] ex_branchTargetAddress;
+  wire ex_PCSrc;
+  wire [31:0] ex_jumpOrBranchAddress;
   wire [3:0] ex_ALUControl;
+
+  wire [31:0] mem_pc;
   wire [31:0] mem_ALUResult;
   wire mem_memRead;
   wire mem_memToReg;
@@ -54,19 +59,18 @@ module PipelinedProcessor (
   wire mem_regWrite;
   wire [31:0] mem_readData2;
   wire [4:0] mem_rd;
-  wire [31:0] mem_branchTargetAddress;
-  wire mem_zeroFlag;
-  wire mem_branch;
+  wire [1:0] mem_jumpType;
   wire [2:0] mem_funct3;
+  wire [31:0] mem_dataFromRAM;
 
   // Wires between MEM and WB
-  wire [31:0] mem_dataFromRAM;
+  wire [31:0] wb_pc;
   wire [31:0] wb_dataFromRAM;
   wire [31:0] wb_ALUResult;
   wire wb_memToReg;
   wire wb_regWrite;
+  wire [1:0] wb_jumpType;
   wire [4:0] wb_rd;
-  wire mem_PCSrc;
 
   // Wire for WB stage
   wire [31:0] wb_writeData;
@@ -75,11 +79,8 @@ module PipelinedProcessor (
   IF_stage if_stage (
       .clk(clk),
       .rst(rst),
-      .PCSrc(mem_PCSrc),
-      .branchTargetAddress(mem_branchTargetAddress),
-      .jumpType(id_jumpType),
-      .zeroFlag(ex_zeroFlag),
-      .ALUResult(ex_ALUResult),
+      .PCSrc(ex_PCSrc),
+      .jumpOrBranchAddress(ex_jumpOrBranchAddress),
       .PCOut(if_pc),
       .instruction(if_instruction)
   );
@@ -130,6 +131,7 @@ module PipelinedProcessor (
       .id_memToReg(id_memToReg),
       .id_memWrite(id_memWrite),
       .id_regWrite(id_regWrite),
+      .id_jumpType(id_jumpType),
       .id_readData1(id_readData1),
       .id_readData2(id_readData2),
       .id_immGenOut(id_immGenOut),
@@ -144,6 +146,7 @@ module PipelinedProcessor (
       .ex_memToReg(ex_memToReg),
       .ex_memWrite(ex_memWrite),
       .ex_regWrite(ex_regWrite),
+      .ex_jumpType(ex_jumpType),
       .ex_readData1(ex_readData1),
       .ex_readData2(ex_readData2),
       .ex_immGenOut(ex_immGenOut),
@@ -162,37 +165,38 @@ module PipelinedProcessor (
       .ALUOp(ex_ALUOp),
       .i30(ex_i30),
       .ALUSrc(ex_ALUSrc),
+      .branch(ex_branch),
+      .jumpType(ex_jumpType),  // 01: jalr, 10: jal
       .ALUResult(ex_ALUResult),
+      .ALUControl(ex_ALUControl),
       .zeroFlag(ex_zeroFlag),
-      .branchTargetAddress(ex_branchTargetAddress),
-      .ALUControl(ex_ALUControl)
+      .PCSrc(ex_PCSrc),
+      .jumpOrBranchAddress(ex_jumpOrBranchAddress)
   );
 
   // EX/MEM Pipeline Register
   EX_MEM_reg ex_mem_reg (
       .clk(clk),
       .rst(rst),
+      .ex_pc(ex_pc),
       .ex_memRead(ex_memRead),
       .ex_memToReg(ex_memToReg),
       .ex_memWrite(ex_memWrite),
       .ex_regWrite(ex_regWrite),
+      .ex_jumpType(ex_jumpType),
       .ex_ALUResult(ex_ALUResult),
       .ex_readData2(ex_readData2),
       .ex_rd(ex_rd),
-      .ex_branchTargetAddress(ex_branchTargetAddress),
-      .ex_zeroFlag(ex_zeroFlag),
-      .ex_branch(ex_branch),
       .ex_funct3(ex_funct3),
+      .mem_pc(mem_pc),
       .mem_memRead(mem_memRead),
       .mem_memToReg(mem_memToReg),
       .mem_memWrite(mem_memWrite),
       .mem_regWrite(mem_regWrite),
+      .mem_jumpType(mem_jumpType),
       .mem_ALUResult(mem_ALUResult),
       .mem_readData2(mem_readData2),
       .mem_rd(mem_rd),
-      .mem_branchTargetAddress(mem_branchTargetAddress),
-      .mem_zeroFlag(mem_zeroFlag),
-      .mem_branch(mem_branch),
       .mem_funct3(mem_funct3)
   );
 
@@ -201,27 +205,28 @@ module PipelinedProcessor (
       .clk(clk),
       .ALUResult(mem_ALUResult),
       .writeData(mem_readData2),
+      .mem_funct3(mem_funct3),
       .memRead(mem_memRead),
       .memToReg(mem_memToReg),
       .memWrite(mem_memWrite),
-      .mem_zeroFlag(mem_zeroFlag),
-      .mem_branch(mem_branch),
-      .mem_funct3(mem_funct3),
-      .dataFromRAM(mem_dataFromRAM),
-      .PCSrc(mem_PCSrc)
+      .dataFromRAM(mem_dataFromRAM)
   );
 
   // MEM/WB Pipeline Register
   MEM_WB_reg mem_wb_reg (
       .clk(clk),
       .rst(rst),
+      .mem_pc(mem_pc),
       .mem_memToReg(mem_memToReg),
       .mem_regWrite(mem_regWrite),
+      .mem_jumpType(mem_jumpType),
       .mem_dataFromRAM(mem_dataFromRAM),
       .mem_ALUResult(mem_ALUResult),
       .mem_rd(mem_rd),
+      .wb_pc(wb_pc),
       .wb_memToReg(wb_memToReg),
       .wb_regWrite(wb_regWrite),
+      .wb_jumpType(wb_jumpType),
       .wb_dataFromRAM(wb_dataFromRAM),
       .wb_ALUResult(wb_ALUResult),
       .wb_rd(wb_rd)
@@ -229,9 +234,11 @@ module PipelinedProcessor (
 
   // WB Stage
   WB_stage wb_stage (
+      .wb_pc(wb_pc),
       .dataFromRAM(wb_dataFromRAM),
       .ALUResult(wb_ALUResult),
       .memToReg(wb_memToReg),
+      .jumpType(wb_jumpType),
       .writeData(wb_writeData)
   );
 
