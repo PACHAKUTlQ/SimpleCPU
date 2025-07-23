@@ -9,13 +9,52 @@ module EX_stage (
     input [1:0] ALUOp,
     input i30,  // Instruction [30]
     input ALUSrc,
+    input branch,
+    input [1:0] jumpType,  // 01: jalr, 10: jal
 
     output [31:0] ALUResult,
+    output [3:0] ALUControl,
     output zeroFlag,
-    output [31:0] branchTargetAddress
+    output reg PCSrc,
+    output reg [31:0] jumpOrBranchAddress
 );
 
-  assign branchTargetAddress = ex_pc + immGenOut;
+  wire [31:0] branchAddress;
+
+  assign branchAddress = ex_pc + (immGenOut << 1);
+
+  always @(*) begin
+    PCSrc = 0;
+    jumpOrBranchAddress = 32'b0;
+
+    if (branch) begin
+      $display("Jump or Branch triggered");
+      case (jumpType)
+        2'b00: begin  // B-type
+          $display("B-type: ex_branchAddress = %b", branchAddress);
+          $display("zeroFlag: %b", zeroFlag);
+          if (zeroFlag) begin
+            $display("B-type branch taken");
+            PCSrc = 1;
+            jumpOrBranchAddress = branchAddress;
+          end
+        end
+        2'b01: begin  // jalr
+          $display("jalr: ALUResult = %h", ALUResult);
+          PCSrc = 1;
+          jumpOrBranchAddress = ALUResult;
+        end
+        2'b10: begin  // jal
+          $display("jal: ex_branchAddress = %b", branchAddress);
+          PCSrc = 1;
+          jumpOrBranchAddress = branchAddress;
+        end
+        default: begin
+          $display("jumpType error");
+        end
+      endcase
+    end
+  end
 
   ALU alu_inst (
       .readData1(readData1),
@@ -26,7 +65,8 @@ module EX_stage (
       .i30(i30),
       .ALUSrc(ALUSrc),
       .result(ALUResult),
-      .zeroFlag(zeroFlag)
+      .zeroFlag(zeroFlag),
+      .ALUControl_out(ALUControl)
   );
 
 endmodule
