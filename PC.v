@@ -3,8 +3,9 @@
 module PC (
     input clk,
     input rst,
+
     input PCSrc,
-    input [31:0] branchTargetAddress,
+    input [31:0] jumpOrBranchAddress,  // jumpOrBranchAddress
 
     output [31:0] PCOut
 );
@@ -22,15 +23,15 @@ module PC (
 
   // PC + 4
   PCAdd4 pcAdd4 (
-      .PCIn           (currentPC),
-      .nextInstruction(PCPlus4)
+      .PCIn   (currentPC),
+      .PCPlus4(PCPlus4)
   );
 
   PCMux pcMux (
-      .nextInstruction  (PCPlus4),
-      .branchInstruction(branchTargetAddress),
-      .branchFlag       (PCSrc),
-      .nextPCOut        (nextPCIn)
+      .PCPlus4            (PCPlus4),
+      .jumpOrBranchAddress(jumpOrBranchAddress),
+      .PCSrc              (PCSrc),
+      .nextPCOut          (nextPCIn)
   );
 
   assign PCOut = currentPC;
@@ -60,21 +61,23 @@ endmodule
 // PC + 4
 module PCAdd4 (
     input  [31:0] PCIn,
-    output [31:0] nextInstruction
+    output [31:0] PCPlus4
 );
 
-  assign nextInstruction = PCIn + 32'd4;
+  assign PCPlus4 = PCIn + 32'd4;
 
 endmodule
 
 
+// All data from MEM stage
 module PCMux (
-    input  [31:0] nextInstruction,
-    input  [31:0] branchInstruction,
-    input         branchFlag,
+    input [31:0] PCPlus4,
+    input [31:0] jumpOrBranchAddress,
+    input        PCSrc,
+
     output [31:0] nextPCOut
 );
 
-  assign nextPCOut = branchFlag ? branchInstruction : nextInstruction;
+  assign nextPCOut = PCSrc ? jumpOrBranchAddress : PCPlus4;
 
 endmodule

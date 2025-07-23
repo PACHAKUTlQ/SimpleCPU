@@ -16,6 +16,7 @@ module ID_stage (
     output memToReg,
     output memWrite,
     output id_regWrite,
+    output [1:0] jumpType,  // 01: jalr, 10: jal
     output [31:0] readData1,
     output [31:0] readData2,
     output [31:0] immGenOut,
@@ -43,7 +44,8 @@ module ID_stage (
       .memRead(memRead),
       .memToReg(memToReg),
       .memWrite(memWrite),
-      .regWrite(id_regWrite)
+      .regWrite(id_regWrite),
+      .jumpType(jumpType)
   );
 
   RegFile reg_file_inst (

@@ -5,33 +5,23 @@ module MEM_stage (
 
     input [31:0] ALUResult,
     input [31:0] writeData,
+    input [2:0] mem_funct3,  // Instruction [14:12]
     input memRead,
     input memToReg,
     input memWrite,
-    input mem_zeroFlag,
-    input mem_branch,
-    input [2:0] mem_funct3,  // Instruction [14:12]
 
-    output [31:0] dataFromRAM,
-    output reg PCSrc
+    output [31:0] dataFromRAM
 );
-
-  always @(*) begin
-    case (mem_funct3)
-      3'b000:  PCSrc = mem_branch & mem_zeroFlag;  // beq
-      3'b001:  PCSrc = mem_branch & ~mem_zeroFlag;  // bne
-      default: PCSrc = 1'b0;
-    endcase
-  end
 
   RAM ram_inst (
       .clk(clk),
-      .ALUResult(ALUResult),
+      .address(ALUResult),
       .writeData(writeData),
+      .funct3(mem_funct3),
       .memRead(memRead),
       .memToReg(memToReg),
       .memWrite(memWrite),
-      .writeDataReg(dataFromRAM)
+      .readData(dataFromRAM)
   );
 
 endmodule

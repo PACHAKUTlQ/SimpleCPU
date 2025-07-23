@@ -4,8 +4,8 @@ module IF_stage (
     input clk,
     input rst,
 
-    input [31:0] branchTargetAddress,
     input PCSrc,
+    input [31:0] jumpOrBranchAddress,
 
     output [31:0] PCOut,
     output [31:0] instruction
@@ -15,7 +15,7 @@ module IF_stage (
       .clk(clk),
       .rst(rst),
       .PCSrc(PCSrc),
-      .branchTargetAddress(branchTargetAddress),
+      .jumpOrBranchAddress(jumpOrBranchAddress),
       .PCOut(PCOut)
   );
 
