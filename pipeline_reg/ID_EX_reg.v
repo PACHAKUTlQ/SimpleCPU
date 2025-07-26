@@ -18,6 +18,8 @@ module ID_EX_reg (
     input [31:0] id_readData2,
     input [31:0] id_immGenOut,
     input [4:0] id_rd,  // Instruction [11:7]
+    input [4:0] id_rs1,  // Instruction [19:15]
+    input [4:0] id_rs2,  // Instruction [24:20]
     input [2:0] id_funct3,  // Instruction [14:12]
     input id_i30,  // Instruction [30]
 
@@ -35,6 +37,8 @@ module ID_EX_reg (
     output reg [31:0] ex_readData2,
     output reg [31:0] ex_immGenOut,
     output reg [4:0] ex_rd,
+    output reg [4:0] ex_rs1,
+    output reg [4:0] ex_rs2,
     output reg [2:0] ex_funct3,
     output reg ex_i30
 );
@@ -54,6 +58,8 @@ module ID_EX_reg (
       ex_readData2 <= 32'b0;
       ex_immGenOut <= 32'b0;
       ex_rd <= 5'b0;
+      ex_rs1 <= 5'b0;
+      ex_rs2 <= 5'b0;
       ex_funct3 <= 3'b0;
       ex_i30 <= 1'b0;
     end else begin
@@ -70,6 +76,8 @@ module ID_EX_reg (
       ex_readData2 <= id_readData2;
       ex_immGenOut <= id_immGenOut;
       ex_rd <= id_rd;
+      ex_rs1 <= id_rs1;
+      ex_rs2 <= id_rs2;
       ex_funct3 <= id_funct3;
       ex_i30 <= id_i30;
     end

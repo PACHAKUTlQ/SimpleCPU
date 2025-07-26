@@ -43,6 +43,8 @@ module PipelinedProcessor (
   wire [31:0] ex_readData2;
   wire [31:0] ex_immGenOut;
   wire [4:0] ex_rd;
+  wire [4:0] ex_rs1;
+  wire [4:0] ex_rs2;
   wire [2:0] ex_funct3;
   wire ex_i30;
 
@@ -140,6 +142,8 @@ module PipelinedProcessor (
       .id_readData2(id_readData2),
       .id_immGenOut(id_immGenOut),
       .id_rd(id_rd),
+      .id_rs1(id_rs1),
+      .id_rs2(id_rs2),
       .id_funct3(id_funct3),
       .id_i30(id_i30),
       .ex_pc(ex_pc),
@@ -155,6 +159,8 @@ module PipelinedProcessor (
       .ex_readData2(ex_readData2),
       .ex_immGenOut(ex_immGenOut),
       .ex_rd(ex_rd),
+      .ex_rs1(ex_rs1),
+      .ex_rs2(ex_rs2),
       .ex_funct3(ex_funct3),
       .ex_i30(ex_i30)
   );
