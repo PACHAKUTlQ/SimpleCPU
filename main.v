@@ -8,6 +8,8 @@ module PipelinedProcessor (
   // Wires between IF and ID
   wire [31:0] if_pc;
   wire [31:0] if_instruction;
+  wire ifFlush;
+  wire if_idWrite;
 
   wire [31:0] id_pc;
   wire [31:0] id_instruction;
@@ -91,6 +93,8 @@ module PipelinedProcessor (
       .rst(rst),
       .if_pc(if_pc),
       .if_instruction(if_instruction),
+      .ifFlush(ifFlush),
+      .if_idWrite(if_idWrite),
       .id_pc(id_pc),
       .id_instruction(id_instruction)
   );
