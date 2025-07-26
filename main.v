@@ -39,6 +39,7 @@ module PipelinedProcessor (
   wire ex_memWrite;
   wire ex_regWrite;
   wire [1:0] ex_jumpType;
+  wire [31:0] ex_jumpOrBranchAddress;
   wire [31:0] ex_readData1;
   wire [31:0] ex_readData2;
   wire [31:0] ex_immGenOut;
@@ -61,6 +62,7 @@ module PipelinedProcessor (
   wire mem_memToReg;
   wire mem_memWrite;
   wire mem_regWrite;
+  wire [31:0] mem_jumpOrBranchAddress;
   wire [31:0] mem_readData2;
   wire [4:0] mem_rd;
   wire [1:0] mem_jumpType;
@@ -194,6 +196,7 @@ module PipelinedProcessor (
       .ex_memWrite(ex_memWrite),
       .ex_regWrite(ex_regWrite),
       .ex_jumpType(ex_jumpType),
+      .ex_jumpOrBranchAddress(ex_jumpOrBranchAddress),
       .ex_ALUResult(ex_ALUResult),
       .ex_readData2(ex_readData2),
       .ex_rd(ex_rd),
@@ -204,6 +207,7 @@ module PipelinedProcessor (
       .mem_memWrite(mem_memWrite),
       .mem_regWrite(mem_regWrite),
       .mem_jumpType(mem_jumpType),
+      .mem_jumpOrBranchAddress(mem_jumpOrBranchAddress),
       .mem_ALUResult(mem_ALUResult),
       .mem_readData2(mem_readData2),
       .mem_rd(mem_rd),
@@ -230,6 +234,7 @@ module PipelinedProcessor (
       .mem_memToReg(mem_memToReg),
       .mem_regWrite(mem_regWrite),
       .mem_jumpType(mem_jumpType),
+      .mem_jumpOrBranchAddress(mem_jumpOrBranchAddress),
       .mem_dataFromRAM(mem_dataFromRAM),
       .mem_ALUResult(mem_ALUResult),
       .mem_rd(mem_rd),
