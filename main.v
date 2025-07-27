@@ -237,6 +237,7 @@ module PipelinedProcessor (
       .clk(clk),
       .rst(rst),
       .mem_pc(mem_pc),
+      .mem_memRead(mem_memRead),
       .mem_memToReg(mem_memToReg),
       .mem_regWrite(mem_regWrite),
       .mem_jumpType(mem_jumpType),
@@ -252,7 +253,9 @@ module PipelinedProcessor (
       .wb_jumpType(wb_jumpType),
       .wb_dataFromRAM(wb_dataFromRAM),
       .wb_ALUResult(wb_ALUResult),
-      .wb_rd(wb_rd)
+      .wb_rd(wb_rd),
+      .wb_rs1(wb_rs1),
+      .wb_rs2(wb_rs2)
   );
 
   // WB Stage
