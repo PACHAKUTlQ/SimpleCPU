@@ -12,9 +12,12 @@ module EX_MEM_reg (
     input ex_regWrite,
     input ex_zeroFlag,
     input [1:0] ex_jumpType,  // 01: jalr, 10: jal
+    input [31:0] ex_jumpOrBranchAddress,
     input [31:0] ex_ALUResult,
     input [31:0] ex_readData2,
     input [4:0] ex_rd,  // Instruction [11:7]
+    input [4:0] ex_rs1,  // Instruction [19:15]
+    input [4:0] ex_rs2,  // Instruction [24:20]
     input [2:0] ex_funct3,  // Instruction [14:12]
 
     // Outputs to MEM Stage
@@ -25,9 +28,12 @@ module EX_MEM_reg (
     output reg mem_regWrite,
     output reg mem_zeroFlag,
     output reg [1:0] mem_jumpType,
+    output reg [31:0] mem_jumpOrBranchAddress,
     output reg [31:0] mem_ALUResult,
     output reg [31:0] mem_readData2,
     output reg [4:0] mem_rd,
+    output reg [4:0] mem_rs1,
+    output reg [4:0] mem_rs2,
     output reg [2:0] mem_funct3
 );
 
@@ -40,9 +46,12 @@ module EX_MEM_reg (
       mem_regWrite <= 1'b0;
       mem_zeroFlag <= 1'b0;
       mem_jumpType <= 2'b00;
+      mem_jumpOrBranchAddress <= 32'b0;
       mem_ALUResult <= 32'b0;
       mem_readData2 <= 32'b0;
       mem_rd <= 5'b0;
+      mem_rs1 <= 5'b0;
+      mem_rs2 <= 5'b0;
       mem_funct3 <= 3'b0;
     end else begin
       mem_pc <= ex_pc;
@@ -52,9 +61,12 @@ module EX_MEM_reg (
       mem_regWrite <= ex_regWrite;
       mem_zeroFlag <= ex_zeroFlag;
       mem_jumpType <= ex_jumpType;
+      mem_jumpOrBranchAddress <= ex_jumpOrBranchAddress;
       mem_ALUResult <= ex_ALUResult;
       mem_readData2 <= ex_readData2;
       mem_rd <= ex_rd;
+      mem_rs1 <= ex_rs1;
+      mem_rs2 <= ex_rs2;
       mem_funct3 <= ex_funct3;
     end
   end
