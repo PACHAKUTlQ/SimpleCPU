@@ -6,6 +6,9 @@ module IF_ID_reg (
 
     input [31:0] if_pc,
     input [31:0] if_instruction,
+    input ifFlush,
+    input if_idWrite,
+
     output reg [31:0] id_pc,
     output reg [31:0] id_instruction
 );
@@ -14,9 +17,13 @@ module IF_ID_reg (
     if (rst) begin
       id_pc <= 32'b0;
       id_instruction <= 32'h00000013;  // nop
-    end else begin
+    end else if (if_idWrite) begin
       id_pc <= if_pc;
       id_instruction <= if_instruction;
+    end
+
+    if (ifFlush) begin
+      id_instruction <= 32'b0;
     end
   end
 

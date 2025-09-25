@@ -8,6 +8,8 @@ module PipelinedProcessor (
   // Wires between IF and ID
   wire [31:0] if_pc;
   wire [31:0] if_instruction;
+  wire ifFlush;
+  wire if_idWrite;
 
   wire [31:0] id_pc;
   wire [31:0] id_instruction;
@@ -37,10 +39,13 @@ module PipelinedProcessor (
   wire ex_memWrite;
   wire ex_regWrite;
   wire [1:0] ex_jumpType;
+  wire [31:0] ex_jumpOrBranchAddress;
   wire [31:0] ex_readData1;
   wire [31:0] ex_readData2;
   wire [31:0] ex_immGenOut;
   wire [4:0] ex_rd;
+  wire [4:0] ex_rs1;
+  wire [4:0] ex_rs2;
   wire [2:0] ex_funct3;
   wire ex_i30;
 
@@ -57,8 +62,11 @@ module PipelinedProcessor (
   wire mem_memToReg;
   wire mem_memWrite;
   wire mem_regWrite;
+  wire [31:0] mem_jumpOrBranchAddress;
   wire [31:0] mem_readData2;
   wire [4:0] mem_rd;
+  wire [4:0] mem_rs1;
+  wire [4:0] mem_rs2;
   wire [1:0] mem_jumpType;
   wire [2:0] mem_funct3;
   wire [31:0] mem_dataFromRAM;
@@ -91,6 +99,8 @@ module PipelinedProcessor (
       .rst(rst),
       .if_pc(if_pc),
       .if_instruction(if_instruction),
+      .ifFlush(ifFlush),
+      .if_idWrite(if_idWrite),
       .id_pc(id_pc),
       .id_instruction(id_instruction)
   );
@@ -136,6 +146,8 @@ module PipelinedProcessor (
       .id_readData2(id_readData2),
       .id_immGenOut(id_immGenOut),
       .id_rd(id_rd),
+      .id_rs1(id_rs1),
+      .id_rs2(id_rs2),
       .id_funct3(id_funct3),
       .id_i30(id_i30),
       .ex_pc(ex_pc),
@@ -151,6 +163,8 @@ module PipelinedProcessor (
       .ex_readData2(ex_readData2),
       .ex_immGenOut(ex_immGenOut),
       .ex_rd(ex_rd),
+      .ex_rs1(ex_rs1),
+      .ex_rs2(ex_rs2),
       .ex_funct3(ex_funct3),
       .ex_i30(ex_i30)
   );
@@ -184,9 +198,12 @@ module PipelinedProcessor (
       .ex_memWrite(ex_memWrite),
       .ex_regWrite(ex_regWrite),
       .ex_jumpType(ex_jumpType),
+      .ex_jumpOrBranchAddress(ex_jumpOrBranchAddress),
       .ex_ALUResult(ex_ALUResult),
       .ex_readData2(ex_readData2),
       .ex_rd(ex_rd),
+      .ex_rs1(ex_rs1),
+      .ex_rs2(ex_rs2),
       .ex_funct3(ex_funct3),
       .mem_pc(mem_pc),
       .mem_memRead(mem_memRead),
@@ -194,9 +211,12 @@ module PipelinedProcessor (
       .mem_memWrite(mem_memWrite),
       .mem_regWrite(mem_regWrite),
       .mem_jumpType(mem_jumpType),
+      .mem_jumpOrBranchAddress(mem_jumpOrBranchAddress),
       .mem_ALUResult(mem_ALUResult),
       .mem_readData2(mem_readData2),
       .mem_rd(mem_rd),
+      .mem_rs1(mem_rs1),
+      .mem_rs2(mem_rs2),
       .mem_funct3(mem_funct3)
   );
 
@@ -217,19 +237,25 @@ module PipelinedProcessor (
       .clk(clk),
       .rst(rst),
       .mem_pc(mem_pc),
+      .mem_memRead(mem_memRead),
       .mem_memToReg(mem_memToReg),
       .mem_regWrite(mem_regWrite),
       .mem_jumpType(mem_jumpType),
+      .mem_jumpOrBranchAddress(mem_jumpOrBranchAddress),
       .mem_dataFromRAM(mem_dataFromRAM),
       .mem_ALUResult(mem_ALUResult),
       .mem_rd(mem_rd),
+      .mem_rs1(mem_rs1),
+      .mem_rs2(mem_rs2),
       .wb_pc(wb_pc),
       .wb_memToReg(wb_memToReg),
       .wb_regWrite(wb_regWrite),
       .wb_jumpType(wb_jumpType),
       .wb_dataFromRAM(wb_dataFromRAM),
       .wb_ALUResult(wb_ALUResult),
-      .wb_rd(wb_rd)
+      .wb_rd(wb_rd),
+      .wb_rs1(wb_rs1),
+      .wb_rs2(wb_rs2)
   );
 
   // WB Stage

@@ -7,7 +7,7 @@ module ImmGen (
 );
 
   always @(*) begin
-    //  add, addi, sub, and, andi, or, sll, slli, srl, srli, lw, sw, lb, lbu, and sb, beq, bne, bge, blt, jal, and jalr
+    // add, addi, sub, and, andi, or, sll, slli, srl, srli, lw, sw, lb, lbu, and sb, beq, bne, bge, blt, jal, and jalr
     case (instruction[6:0])
       7'b0010011,  // I-type: addi, andi, slli, srli
       7'b1100111,  // I-type: jalr
